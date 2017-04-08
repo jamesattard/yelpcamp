@@ -1,3 +1,4 @@
+// Packages
 var expressSanitizer  = require("express-sanitizer"),
 methodOverride        = require("method-override"),
 bodyParser            = require("body-parser"),
@@ -5,21 +6,21 @@ mongoose              = require("mongoose"),
 express               = require("express"),
 app                   = express();
 
+// Seeding
+var seedDB  = require("./seeds");
+seedDB();
+
+// Models
+var Campground  = require("./models/campground"),
+Comment         = require("./models/comment"),
+User            = require("./models/user");
+
 // App Config
 mongoose.connect("mongodb://localhost/yelp_camp");
 app.set("view engine", "ejs");
 app.use(express.static("public"));
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(expressSanitizer());
-
-// Mongoose Schema & Model Config
-var campgroundSchema = new mongoose.Schema({
-  name: String,
-  image: String,
-  description: String
-});
-
-var Campground = mongoose.model("Campground", campgroundSchema);
 
 // RESTful Routes
 app.get("/", function(req, res){
@@ -66,11 +67,12 @@ app.post("/campgrounds", function(req, res){
 
 // SHOW Route
 app.get("/campgrounds/:id", function(req, res){
-  Campground.findById(req.params.id, function(err, foundCampGround){
+  Campground.findById(req.params.id).populate("comments").exec( function(err, foundCampground){
     if (err){
       console.log(err);
     } else {
-      res.render("show", {campground: foundCampGround});
+      console.log(foundCampground);
+      res.render("show", {campground: foundCampground});
     }
   });
 });
