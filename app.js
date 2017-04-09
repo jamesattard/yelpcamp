@@ -6,10 +6,6 @@ mongoose              = require("mongoose"),
 express               = require("express"),
 app                   = express();
 
-// Seeding
-var seedDB  = require("./seeds");
-seedDB();
-
 // Models
 var Campground  = require("./models/campground"),
 Comment         = require("./models/comment"),
@@ -21,6 +17,10 @@ app.set("view engine", "ejs");
 app.use(express.static("public"));
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(expressSanitizer());
+
+// Seeding
+var seedDB  = require("./seeds");
+seedDB();
 
 // RESTful Routes
 app.get("/", function(req, res){
