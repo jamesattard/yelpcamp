@@ -7,14 +7,14 @@ express               = require("express"),
 app                   = express();
 
 // Models
-var Campground  = require("./models/campground"),
-Comment         = require("./models/comment"),
-User            = require("./models/user");
+var Campground        = require("./models/campground"),
+Comment               = require("./models/comment"),
+User                  = require("./models/user");
 
 // App Config
 mongoose.connect("mongodb://localhost/yelp_camp");
 app.set("view engine", "ejs");
-app.use(express.static("public"));
+app.use(express.static(__dirname + "/public"));
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(expressSanitizer());
 
@@ -27,13 +27,17 @@ app.get("/", function(req, res){
   res.render("landing");
 });
 
+// ===================
+// Campgrounds Routes
+// ===================
+
 // INDEX Route
 app.get("/campgrounds", function(req, res){
   Campground.find({}, function(err, allCampgrounds){
-    if (err){
+    if (err) {
       console.log(err);
     } else {
-      res.render("index",
+      res.render("campgrounds/index",
         {campgrounds:allCampgrounds}
       );
     }
@@ -42,7 +46,7 @@ app.get("/campgrounds", function(req, res){
 
 // NEW Route
 app.get("/campgrounds/new", function(req, res){
-  res.render("new");
+  res.render("campgrounds/new");
 });
 
 // CREATE Route
@@ -57,7 +61,7 @@ app.post("/campgrounds", function(req, res){
   };
 
   Campground.create(newCampground, function(err, newlyCreated){
-    if (err){
+    if (err) {
       console.log(err);
     } else {
       res.redirect("/campgrounds");
@@ -68,11 +72,11 @@ app.post("/campgrounds", function(req, res){
 // SHOW Route
 app.get("/campgrounds/:id", function(req, res){
   Campground.findById(req.params.id).populate("comments").exec( function(err, foundCampground){
-    if (err){
+    if (err) {
       console.log(err);
     } else {
       console.log(foundCampground);
-      res.render("show", {campground: foundCampground});
+      res.render("campgrounds/show", {campground: foundCampground});
     }
   });
 });
@@ -82,6 +86,41 @@ app.get("/campgrounds/:id", function(req, res){
 // UPDATE Route
 
 // DESTROY Route
+
+// ================
+// Comments Routes
+// ================
+
+// NEW Route
+app.get("/campgrounds/:id/comments/new", function(req, res){
+  Campground.findById(req.params.id, function(err, campground){
+    if (err) {
+      console.log(err);
+    } else {
+      res.render("comments/new", {campground: campground});
+    }
+  })
+});
+
+// CREATE Route
+app.post("/campgrounds/:id/comments", function(req, res){
+  Campground.findById(req.params.id, function(err, campground){
+    if (err) {
+      console.log(err);
+      redirect("/campgrounds");
+    } else {
+      Comment.create(req.body.comment, function(err, comment){
+        if (err) {
+          console.log(err);
+        } else {
+          campground.comments.push(comment);
+          campground.save();
+          res.redirect("/campgrounds/" + campground._id);
+        }
+      });
+    }
+  });
+});
 
 app.listen(3000, function(){
   console.log("YelpCamp server has started...");
