@@ -20,12 +20,12 @@ router.get("/", function(req, res){
 });
 
 // NEW Route
-router.get("/new", function(req, res){
+router.get("/new", isLoggedIn, function(req, res){
   res.render("campgrounds/new");
 });
 
 // CREATE Route
-router.post("/", function(req, res){
+router.post("/", isLoggedIn, function(req, res){
   var name = req.body.name;
   var image = req.body.image;
   var description = req.body.description;
@@ -54,5 +54,13 @@ router.get("/:id", function(req, res){
     }
   });
 });
+
+// Middleware
+function isLoggedIn(req, res, next){
+  if (req.isAuthenticated()){
+    return next();
+  }
+  res.redirect("/login");
+};
 
 module.exports = router;

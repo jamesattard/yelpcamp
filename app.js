@@ -28,7 +28,7 @@ app.use(expressSanitizer());
 
 // Seeding
 var seedDB  = require("./seeds");
-seedDB();
+// seedDB();
 
 // Passport Config
 app.use(expressSession({
