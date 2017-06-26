@@ -1,5 +1,6 @@
 var mongoose = require("mongoose");
 
+// Campground Schema Setup
 var campgroundSchema = new mongoose.Schema({
   name: String,
   image: String,
@@ -9,7 +10,7 @@ var campgroundSchema = new mongoose.Schema({
       type: mongoose.Schema.Types.ObjectId,
       ref: "User"
     },
-    username: String
+    username: String // added because of convenienve as we will be using it a lot
   },
   comments: [
     {

@@ -1,32 +1,37 @@
-var express = require("express");
-var router  = express.Router({mergeParams: true}); // make params readable inside the shortened route...
-var Campground  = require("../models/campground");
-var Comment = require("../models/comment");
+var express       = require("express");
+var router        = express.Router({mergeParams: true}); // to ensure we have access to the :id param from app.js
+var Campground    = require("../models/campground");
+var Comment       = require("../models/comment");
 
-// ===================
-// Comments Routes
-// ===================
+// ---------------
+// COMMENTS ROUTES
+// ---------------
 
-// NEW Route
+// Shortened from /campgrounds/:id/comments
+
+// Comments new
 router.get("/new", isLoggedIn, function(req, res){
+  // Find campground by id
   Campground.findById(req.params.id, function(err, campground){
-    if (err) {
+    if(err){
       console.log(err);
     } else {
       res.render("comments/new", {campground: campground});
     }
-  })
+  });
 });
 
-// CREATE Route
+// Comments create
 router.post("/", isLoggedIn, function(req, res){
+  // Lookup campground using ID
   Campground.findById(req.params.id, function(err, campground){
-    if (err) {
+    if(err){
       console.log(err);
-      redirect("/campgrounds");
+      res.redirect("/campgrounds");
     } else {
+      // Create new comment
       Comment.create(req.body.comment, function(err, comment){
-        if (err) {
+        if(err){
           console.log(err);
         } else {
           // add username and id to comment
@@ -34,11 +39,11 @@ router.post("/", isLoggedIn, function(req, res){
           comment.author.username = req.user.username;
           // save comment
           comment.save();
-          // add comment to campground
-          campground.comments.push(comment);
           // save campground
+          campground.comments.push(comment);
           campground.save();
-          res.redirect("/campgrounds/" + campground._id);
+          // Redirect to campground show page
+          res.redirect('/campgrounds/' + campground._id);
         }
       });
     }
@@ -47,7 +52,7 @@ router.post("/", isLoggedIn, function(req, res){
 
 // Middleware
 function isLoggedIn(req, res, next){
-  if (req.isAuthenticated()){
+  if(req.isAuthenticated()){
     return next();
   }
   res.redirect("/login");

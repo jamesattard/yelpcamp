@@ -1,52 +1,50 @@
-var mongoose = require("mongoose");
-var Campground = require("./models/campground");
-var Comment = require("./models/comment");
+var mongoose    = require("mongoose");
+var Campground  = require("./models/campground");
+var Comment     = require("./models/comment");
 
 var data = [
   {
-    name: "Silver Crest",
+    name: "Salmon Creek",
+    image: "https://farm8.staticflickr.com/7252/7626464792_3e68c2a6a5.jpg",
+    description: "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like)."
+  },
+  {
+    name: "Mountain Dew",
     image: "https://farm6.staticflickr.com/5181/5641024448_04fefbb64d.jpg",
     description: "There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable. If you are going to use a passage of Lorem Ipsum, you need to be sure there isn't anything embarrassing hidden in the middle of text. All the Lorem Ipsum generators on the Internet tend to repeat predefined chunks as necessary, making this the first true generator on the Internet. It uses a dictionary of over 200 Latin words, combined with a handful of model sentence structures, to generate Lorem Ipsum which looks reasonable. The generated Lorem Ipsum is therefore always free from repetition, injected humour, or non-characteristic words etc."
   },
   {
-    name: "Blue Rocks",
-    image: "https://farm5.staticflickr.com/4137/4812576807_8ba9255f38.jpg",
-    description: "There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable. If you are going to use a passage of Lorem Ipsum, you need to be sure there isn't anything embarrassing hidden in the middle of text. All the Lorem Ipsum generators on the Internet tend to repeat predefined chunks as necessary, making this the first true generator on the Internet. It uses a dictionary of over 200 Latin words, combined with a handful of model sentence structures, to generate Lorem Ipsum which looks reasonable. The generated Lorem Ipsum is therefore always free from repetition, injected humour, or non-characteristic words etc."
-  },
-  {
-    name: "Orange Sunset",
-    image: "https://farm5.staticflickr.com/4153/4835814837_feef6f969b.jpg",
-    description: "There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable. If you are going to use a passage of Lorem Ipsum, you need to be sure there isn't anything embarrassing hidden in the middle of text. All the Lorem Ipsum generators on the Internet tend to repeat predefined chunks as necessary, making this the first true generator on the Internet. It uses a dictionary of over 200 Latin words, combined with a handful of model sentence structures, to generate Lorem Ipsum which looks reasonable. The generated Lorem Ipsum is therefore always free from repetition, injected humour, or non-characteristic words etc."
+    name: "Rock Salt",
+    image: "https://farm3.staticflickr.com/2259/2182093741_164dc44a24.jpg",
+    description: "Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passage, and going through the cites of the word in classical literature, discovered the undoubtable source. Lorem Ipsum comes from sections 1.10.32 and 1.10.33 of de Finibus Bonorum et Malorum (The Extremes of Good and Evil) by Cicero, written in 45 BC. This book is a treatise on the theory of ethics, very popular during the Renaissance. The first line of Lorem Ipsum, Lorem ipsum dolor sit amet.., comes from a line in section 1.10.32."
   }
-];
-
-var seedComment = {
-  text: "This place is great but no WiFi!",
-  author: "Homer"
-};
+]
 
 function seedDB(){
   // Remove all campgrounds
   Campground.remove({}, function(err){
-    if (err){
+    if(err){
       console.log(err);
-    } else { // Remove successful..Go ahead and create campgrounds
-      console.log("Campgrounds reset!");
+    } else {
+      console.log("Removed campgrounds");
       // Add a few campgrounds
       data.forEach(function(seed){
         Campground.create(seed, function(err, campground){
-          if (err){
+          if(err){
             console.log(err);
-          } else { // Seed successful
-            console.log("Added a new campground!");
-            // Add a new comment
-            Comment.create(seedComment, function(err, comment){
-              if (err){
+          } else {
+            console.log("added a campground");
+            //create a comment
+            Comment.create({
+              text: "This place is great but I wish there was Internet",
+              author: "Homer"
+            }, function(err, comment){
+              if(err){
                 console.log(err);
               } else {
                 campground.comments.push(comment);
                 campground.save();
-                console.log("Added new comment!");
+                console.log("Created new comment");
               }
             });
           }
