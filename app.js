@@ -16,8 +16,11 @@ var commentRoutes     = require("./routes/comments"),
     indexRoutes       = require("./routes/index");
 
 // Application configuration
+
 //mongoose.connect("mongodb://localhost/yelp_camp_v13");
-mongoose.connect("mongodb://james:password@ds143532.mlab.com:43532/yelpcamp_ja");
+//mongoose.connect("mongodb://james:password@ds143532.mlab.com:43532/yelpcamp_ja");
+mongoose.connect(process.env.DATABASEURL);
+
 app.use(bodyParser.urlencoded({extended: true}));
 app.set("view engine", "ejs");
 app.use(express.static(__dirname + "/public"));
@@ -57,6 +60,7 @@ app.use(indexRoutes);
 app.use("/campgrounds", campgroundRoutes);
 app.use("/campgrounds/:id/comments", commentRoutes); // this :id param is accessed thanks to mergeParams inside comments.js
 
+// commented out as does not work with Heroku
 // app.listen(3000, function(){
 //   console.log("YelpCamp server has started...");
 // });
