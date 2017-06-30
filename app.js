@@ -57,6 +57,10 @@ app.use(indexRoutes);
 app.use("/campgrounds", campgroundRoutes);
 app.use("/campgrounds/:id/comments", commentRoutes); // this :id param is accessed thanks to mergeParams inside comments.js
 
-app.listen(3000, function(){
+// app.listen(3000, function(){
+//   console.log("YelpCamp server has started...");
+// });
+
+app.listen(process.env.PORT, function(){
   console.log("YelpCamp server has started...");
 });
